@@ -66,9 +66,9 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi.converter)
     implementation(libs.hilt.android)
+    implementation(libs.timber)
+    implementation(libs.play.services.location)
     ksp(libs.hilt.compiler)
-
-
 
     testImplementation(libs.junit)
 
