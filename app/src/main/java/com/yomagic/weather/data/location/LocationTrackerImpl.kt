@@ -17,8 +17,7 @@ import javax.inject.Inject
 class LocationTrackerImpl @Inject constructor(
     private val locationClient: FusedLocationProviderClient,
     private val application: Application,
-): LocationTracker
-{
+): LocationTracker {
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getCurrentLocation(): Resource<Location?> {
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
@@ -31,14 +30,15 @@ class LocationTrackerImpl @Inject constructor(
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
-        val locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager =
+            application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         if (!hasAccessFineLocationPermission || !hasAccessCourseLocationPermission || !isGpsEnabled) {
             return Resource.Error("Location permission or GPS is not enabled")
         }
 
-        return suspendCancellableCoroutine {  cont ->
+        return suspendCancellableCoroutine { cont ->
             locationClient.lastLocation.apply {
                 if (isComplete) {
                     if (isSuccessful) {
@@ -52,10 +52,14 @@ class LocationTrackerImpl @Inject constructor(
                     cont.resume(Resource.Success(it), onCancellation = null)
                 }
                 addOnFailureListener {
-                    cont.resume(Resource.Error(it.message ?: "Location not found"), onCancellation = null)
+                    cont.resume(
+                        Resource.Error(it.message ?: "Location not found"),
+                        onCancellation = null
+                    )
                 }
                 addOnCanceledListener {
                     cont.cancel()
+                }
             }
         }
     }
