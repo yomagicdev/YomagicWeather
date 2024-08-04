@@ -5,5 +5,5 @@ import com.yomagic.weather.domain.util.Resource
 
 interface LocationTracker {
 
-    suspend fun getCurrentLocation(): Resource<Location?>
+    suspend fun getCurrentLocation(): Resource<Location>
 }

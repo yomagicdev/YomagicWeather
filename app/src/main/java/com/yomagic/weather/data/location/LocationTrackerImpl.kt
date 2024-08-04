@@ -19,7 +19,7 @@ class LocationTrackerImpl @Inject constructor(
     private val application: Application,
 ): LocationTracker {
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getCurrentLocation(): Resource<Location?> {
+    override suspend fun getCurrentLocation(): Resource<Location> {
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
             application,
             Manifest.permission.ACCESS_FINE_LOCATION
