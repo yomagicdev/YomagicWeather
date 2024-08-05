@@ -4,6 +4,7 @@ import com.yomagic.weather.data.remote.WeatherApi
 import com.yomagic.weather.domain.repository.WeatherRepository
 import com.yomagic.weather.domain.util.Resource
 import com.yomagic.weather.domain.weather.WeatherInfo
+import timber.log.Timber
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -18,8 +19,9 @@ class WeatherRepositoryImpl @Inject constructor(
                     longitude = long
                 ).body()?.toDomainModel()
             )
-        } catch (e: Exception) {
-            Resource.Error(e.message ?: "An unknown error occurred")
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            Resource.Error(t.message ?: "An unknown error occurred")
         }
     }
 }

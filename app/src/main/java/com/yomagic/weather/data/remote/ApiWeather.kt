@@ -8,8 +8,11 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class ApiWeather(
-    @field:Json(name = "hourly")
-    val weatherData: ApiWeatherData
+    @Json(name = "hourly")
+    val weatherData: ApiWeatherData,
+    val latitude: Double,
+    val longitude: Double,
+    val timezone: String
 ) {
     fun toDomainModel(): WeatherInfo {
         val weatherDataPerDay = weatherData.time.mapIndexed { index, time ->
