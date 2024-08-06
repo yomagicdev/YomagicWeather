@@ -1,5 +1,7 @@
 package com.yomagic.weather.presentation
 
+import android.app.Application
+import android.location.Geocoder
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,15 +12,22 @@ import com.yomagic.weather.domain.repository.WeatherRepository
 import com.yomagic.weather.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val locationTracker: LocationTracker,
+    private val application: Application,
 ) : ViewModel() {
 
     var state by mutableStateOf(WeatherState())
+        private set
+
+    private val geoCoder = Geocoder(application, Locale.getDefault())
+
+    var city by mutableStateOf("")
         private set
 
     fun loadWeather() = viewModelScope.launch {
@@ -32,6 +41,7 @@ class WeatherViewModel @Inject constructor(
                         lat = location.latitude,
                         long = location.longitude
                     )
+                    weatherResult.data?.city = geoCoder.getFromLocation(location.latitude, location.longitude, 1)?.firstOrNull()?.locality
                     state = when (weatherResult) {
                         is Resource.Success -> {
                             state.copy(

@@ -20,6 +20,7 @@ import com.yomagic.weather.presentation.theme.DarkBlue
 import com.yomagic.weather.presentation.theme.DeepBlue
 import com.yomagic.weather.presentation.theme.YomagicWeatherTheme
 import com.yomagic.weather.presentation.ui.composables.WeatherCard
+import com.yomagic.weather.presentation.ui.composables.WeatherForecast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
                             state = viewModel.state,
                             backgroundColor = DeepBlue
                         )
+                        WeatherForecast(state = viewModel.state)
                     }
                 }
             }

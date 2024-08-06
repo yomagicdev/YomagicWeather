@@ -19,9 +19,9 @@ class WeatherRepositoryImpl @Inject constructor(
                     longitude = long
                 ).body()?.toDomainModel()
             )
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            Resource.Error(t.message ?: "An unknown error occurred")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "An unknown error occurred")
         }
     }
 }
