@@ -8,6 +8,8 @@ import android.location.Location
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.yomagic.weather.domain.location.LocationTracker
 import com.yomagic.weather.domain.util.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +41,7 @@ class LocationTrackerImpl @Inject constructor(
         }
 
         return suspendCancellableCoroutine { cont ->
-            locationClient.lastLocation.apply {
+            locationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, null).apply {
                 if (isComplete) {
                     if (isSuccessful) {
                         cont.resume(Resource.Success(result), onCancellation = null)

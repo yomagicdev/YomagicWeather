@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yomagic.weather.domain.weather.WeatherData
 import com.yomagic.weather.presentation.WeatherState
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -61,7 +64,18 @@ private fun HourlyWeatherDisplay(
 fun WeatherForecast(
     state: WeatherState
 ) {
+    val listState = rememberLazyListState()
+    val currentHour = LocalDateTime.now().hour
+
     state.weather?.weatherDataPerDay?.get(0)?.let { data ->
+        val currentHourIndex = data.indexOfFirst { it.time.hour == currentHour }
+
+        LaunchedEffect(key1 = currentHourIndex) {
+            if (currentHourIndex != -1) {
+                listState.scrollToItem(currentHourIndex)
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -73,7 +87,9 @@ fun WeatherForecast(
                 color = Color.White,
             )
             Spacer(modifier = Modifier.height(16.dp))
-            LazyRow(content = {
+            LazyRow(
+                state = listState,
+                content = {
                 items(data.size) { index ->
                     HourlyWeatherDisplay(
                         weatherData = data[index],
